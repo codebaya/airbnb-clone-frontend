@@ -10,5 +10,5 @@ git init
 git add -A
 git commit -m "first commit"
 git branch -M main
-git remote set-url origin https://github.com/codebaya/airbnb-clone-frontend.git
+git remote set-url https://github.com/codebaya/airbnb-clone-frontend.git
 git push -u origin main
