@@ -1,12 +1,13 @@
-import {Box, HStack} from "@chakra-ui/react";
+import {
+    Box
+} from "@chakra-ui/react";
 import {Outlet} from "react-router-dom";
 
+import Header from "./Header";
 export default function Root() {
     return (
         <Box>
-            <HStack>
-
-            </HStack>
+            <Header />
             <Outlet />
         </Box>
     )
