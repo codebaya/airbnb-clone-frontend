@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useUser from "../lib/useUser";
 
 
-export default function HostOnlyPage() {
+export default function useHostOnlyPage() {
     const {user, userLoading} = useUser()
     const navigate = useNavigate();
     useEffect(() => {

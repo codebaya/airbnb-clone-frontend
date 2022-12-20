@@ -8,7 +8,7 @@ import {useEffect} from "react";
 
 export default function Home() {
     useEffect(() => {
-        console.log("hello!")
+        console.log("home!")
     }, [])
     const {isLoading, data} = useQuery<IRoomList[]>(["rooms"], getRooms);
     return (
@@ -40,10 +40,10 @@ export default function Home() {
                 <Room
                     key={room.pk}
                     pk={room.pk}
-                    // imageURL={room.photos[0].file}
+                    isOwner={room.is_owner}
                     imageURL={
                     room.photos[0]?.file ??
-                    `https://a0.muscache.com/im/pictures/miso/Hosting-717134404264905813/original/5a06ec14-3591-459f-86ec-dfe5be7c203c.jpeg`
+                    `https://as1.ftcdn.net/v2/jpg/04/34/72/82/1000_F_434728286_OWQQvAFoXZLdGHlObozsolNeuSxhpr84.jpg`
                     }
 
                     name={room.name}

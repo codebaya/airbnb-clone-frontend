@@ -6,6 +6,18 @@ export interface IRoomPhotoPhoto {
   description: string;
 }
 
+export interface IRoomBooking {
+  pk: string,
+  check_in : string,
+  check_out : string,
+  kind: string,
+  name: string,
+
+  guests: number,
+
+
+}
+
 export interface IRoomList {
   pk: number;
   name: string;
@@ -35,6 +47,7 @@ export interface ICategory {
 
 
 export interface IRoomDetail extends IRoomList {
+  id:number,
   created_at: string;
   updated_at: string;
   rooms: number;

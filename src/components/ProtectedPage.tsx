@@ -15,5 +15,5 @@ export default function ProtectedPage({children}: IProtectedPageProps) {
             }
         }
     }, [userLoading, isLoggedIn, navigate])
-    return <>{children}s</>
+    return <>{children}</>
 }

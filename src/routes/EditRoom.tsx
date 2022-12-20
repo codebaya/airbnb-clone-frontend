@@ -14,84 +14,120 @@ import {
     VStack, useToast
 } from "@chakra-ui/react";
 import {FaBed, FaMoneyBill, FaToilet,} from "react-icons/fa";
-import {getAmenities, getCategories, IUploadRoomVarious, uploadRoom} from "../api";
+import {
+    getAmenities,
+    getCategories,
+    getRoom,
+    getRoomReviews,
+    IUploadRoomVarious,
+    editRoom,
+    IEditRoomVariables
+} from "../api";
 import {useMutation, useQuery} from "@tanstack/react-query";
-import {IAmenity, ICategory, IRoomDetail} from "../types";
+import {IAmenity, ICategory, IReview, IRoomDetail} from "../types";
 import {useForm} from "react-hook-form";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import useUser from "../lib/useUser";
+import {useState} from "react";
 
-export default function UploadRoom() {
-    const { register, handleSubmit } = useForm<IUploadRoomVarious>();
+export default function EditRoom() {
+    const { register, handleSubmit } = useForm<IEditRoomVariables>();
+    const { roomPk } = useParams();
+    const { user } = useUser();
+    const { data } = useQuery<IRoomDetail>([`rooms`, roomPk], getRoom);
+
+    // const { data: reviewsData} = useQuery<
+    //     IReview[]
+    // >([`rooms`, roomPk, `reviews`], getRoomReviews);
+    // console.log("dataEdit", data);
+
     const toast = useToast();
     const navigate = useNavigate();
-    const mutation = useMutation(uploadRoom, {
+    const mutation = useMutation(editRoom, {
         onSuccess:(data:IRoomDetail) => {
             toast({
                 status: "success",
-                title: "Room Created",
+                title: "Room updated!",
                 position: "bottom-right",
             });
-            navigate(`/rooms/${data.id}`);
+            navigate(`/rooms/${roomPk}`);
         }
     });
+
     const { data:amenities, isLoading:isAmenitiesLoading} = useQuery<IAmenity[]>(["amenities"], getAmenities)
     const {data:categories, isLoading:isCategoriesLoading} = useQuery<ICategory[]>(["categories"], getCategories)
     useHostOnlyPage();
-    const onSubmit = (data:IUploadRoomVarious) => {
-        mutation.mutate(data);
-        console.log("data_from uploadRoom", data)
+    const onSubmit = (data:IEditRoomVariables) => {
+        if (roomPk) {
+            data['roomPk'] = roomPk;
+            mutation.mutate(data);
+            console.log("datacol", data)
+        }
     }
+
     return (
         <ProtectedPage>
             <Box pb={40} mt={10} px={{base: 10, lg:40,}} >
                 <Container>
-                    <Heading textAlign={"center"} >Upload Room</Heading>
+                    <Heading textAlign={"center"} >Edit Room</Heading>
                     <VStack spacing={5} as={"form"} onSubmit={handleSubmit(onSubmit)}>
+                        {/*<FormControl>*/}
+                        {/*    <FormLabel>test</FormLabel>*/}
+                        {/*    <input*/}
+                        {/*    onChange={onChange}*/}
+                        {/*    name="name"*/}
+                        {/*    value={data?.name}*/}
+                        {/*    placeholder="Name"*/}
+                        {/*  />*/}
+                        {/*    <FormHelperText>Write the name of your room</FormHelperText>*/}
+                        {/*</FormControl>*/}
                         <FormControl>
                             <FormLabel>Name</FormLabel>
-                            <Input {...register("name", {required:true})} required type="text" />
+                            <Input defaultValue={data?.name} {...register("name", {required:true})} type="text" >
+                                {/*{data?.name}*/}
+                            </Input>
                             <FormHelperText>Write the name of your room</FormHelperText>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Country</FormLabel>
-                            <Input {...register("country", {required:true})} required type="text" />
+                            <Input defaultValue={data?.country} {...register("country", {required:true})} required type="text" />
                         </FormControl>
                         <FormControl>
                             <FormLabel>City</FormLabel>
-                            <Input {...register("city", {required:true})} required type="text" />
+                            <Input defaultValue={data?.city} {...register("city", {required:true})} required type="text" />
                         </FormControl>
                         <FormControl>
                             <FormLabel>Address</FormLabel>
-                            <Input {...register("address", {required:true})} required type="text" />
+                            <Input defaultValue={data?.address} {...register("address", {required:true})} required type="text" />
                         </FormControl>
                         <FormControl>
                             <FormLabel>Price</FormLabel>
                             <InputGroup>
                                 <InputLeftAddon children="$USD" />
-                                <Input {...register("price", {required:true})} required type="number" min={0} />
+                                <Input defaultValue={data?.price} {...register("price", {valueAsNumber:true})} required type="number" />
                             </InputGroup>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Room</FormLabel>
                             <InputGroup>
                                 <InputLeftAddon children={<FaBed />} />
-                                <Input {...register("rooms", {required:true})} required type="number" min={0} />
+                                <Input defaultValue={data?.rooms} {...register("rooms", {required:true})} required type="number" min={0} />
                             </InputGroup>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Toilets</FormLabel>
                             <InputGroup>
                                 <InputLeftAddon children={<FaToilet />} />
-                                <Input {...register("toilets", {required:true})} type="number" min={0} />
+                                <Input defaultValue={data?.rooms} {...register("toilets", {required:true})} type="number" min={0} />
                             </InputGroup>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Description</FormLabel>
-                            <Textarea {...register("description", {required:true})}></Textarea>
+                            <Textarea defaultValue={data?.description} {...register("description", {required:true})}></Textarea>
                         </FormControl>
                         <FormControl>
                             <FormLabel>Pet friendly</FormLabel>
-                            <Checkbox {...register("pet_friendly", {required:true})} />
+                            <Checkbox  {...register("pet_friendly", {required:true})} checked={data?.pet_friendly} />
                         </FormControl>
                         <FormControl>
                             <FormLabel>Kind of room</FormLabel>
