@@ -6,13 +6,11 @@ import error = Simulate.error;
 import exp from "constants";
 import {queryKey} from "@tanstack/react-query/build/lib/__tests__/utils";
 const instance = axios.create({
-    baseURL: "http://127.0.0.1:8000/api/v1/",
+    baseURL:
+        process.env.NODE_ENV === "development" ?
+        "http://127.0.0.1:8000/api/v1/"
+            : "https://airbnbclone-4lb4.onrender.com/api/v1",
     withCredentials: true,
-    // headers: {
-    //     "Access-Control-Allow-Origin": "*",
-    //
-    // }
-    // method:'get',
 });
 
 export const getRooms = () =>
